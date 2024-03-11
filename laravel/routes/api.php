@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Http\Controllers\PeliculaController;
+
+Route::get('/peliculas', [PeliculaController::class, 'index']);
+Route::get('/peliculas/{id}', [PeliculaController::class, 'show']);
+
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
