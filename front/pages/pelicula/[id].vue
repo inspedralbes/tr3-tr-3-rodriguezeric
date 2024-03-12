@@ -3,14 +3,12 @@
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
       <div v-for="sesion in sesiones" :key="sesion.id">
-        <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
-          <div class="movie-card">
-            <h2>{{ sesion.pelicula.titol }}</h2>
-            <img :src="sesion.pelicula.poster" alt="Poster" />
-            <p>Día: {{ sesion.dia }}</p>
-            <p>Hora: {{ sesion.hora }}</p>
-          </div>
-        </nuxt-link>
+        <h2>{{ sesion.pelicula.titol }}</h2>
+        <img :src="sesion.pelicula.poster" alt="Poster" />
+        <p>Día: {{ sesion.dia }}</p>
+        <p>Hora: {{ sesion.hora }}</p>
+        <p>Hora: {{ sesion.pelicula.sinopsis }}</p>
+        <button><router-link to="/" class="back-button">Volver a la página inicial</router-link></button>
       </div>
     </div>
   </div>
@@ -43,8 +41,6 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .cinema-home {
   max-width: 800px;
@@ -76,16 +72,17 @@ export default {
   margin-bottom: 10px;
 }
 
-/* Apply styles to MovieCard component */
-.movie-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin: 10px;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out;
+.back-button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 
-.movie-card:hover {
-  transform: scale(1.05);
+.back-button:hover {
+  background-color: #0056b3;
 }
 </style>
