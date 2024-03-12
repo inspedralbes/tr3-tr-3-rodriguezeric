@@ -2,13 +2,14 @@
   <div class="cinema-home">
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
-      <div v-for="sesion in sesiones" :key="sesion.id">
+      <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
         <h2>{{ sesion.pelicula.titol }}</h2>
         <img :src="sesion.pelicula.poster" alt="Poster" />
         <p>Día: {{ sesion.dia }}</p>
         <p>Hora: {{ sesion.hora }}</p>
-        <p>Hora: {{ sesion.pelicula.sinopsis }}</p>
-        <button><router-link to="/" class="back-button">Volver a la página inicial</router-link></button>
+        <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
+        <router-link to="/" class="back-button">Volver a la página inicial</router-link>
+        <router-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</router-link>
       </div>
     </div>
   </div>
@@ -23,6 +24,12 @@ export default {
   },
   async mounted() {
     await this.fetchSesiones();
+  },
+  computed: {
+    sesionesFiltradas() {
+      const idParam = parseInt(this.$route.params.id);
+      return this.sesiones.filter(sesion => sesion.id === idParam);
+    }
   },
   methods: {
     async fetchSesiones() {

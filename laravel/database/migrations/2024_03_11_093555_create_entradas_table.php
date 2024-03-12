@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_sesion');
             $table->unsignedBigInteger('id_butaca');
             $table->decimal('precio', 8, 2);
+
+            // Agregar la clave foránea
+            $table->foreign('id_sesion')->references('id')->on('sessios');
         });
     }
 
@@ -27,3 +30,4 @@ return new class extends Migration
         Schema::dropIfExists('entradas');
     }
 };
+
