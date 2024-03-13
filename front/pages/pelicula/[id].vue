@@ -8,8 +8,8 @@
         <p>Día: {{ sesion.dia }}</p>
         <p>Hora: {{ sesion.hora }}</p>
         <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
-        <router-link to="/" class="back-button">Volver a la página inicial</router-link>
-        <router-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</router-link>
+        <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
+        <nuxt-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</nuxt-link>
       </div>
     </div>
   </div>
@@ -24,6 +24,7 @@ export default {
   },
   async mounted() {
     await this.fetchSesiones();
+    
   },
   computed: {
     sesionesFiltradas() {

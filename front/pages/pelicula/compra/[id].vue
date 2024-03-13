@@ -1,89 +1,134 @@
 <template>
-    <div class="seat-selection">
-      <h1>Selecciona tu butaca</h1>
-      <div class="seat-map">
-        <div v-for="(fila, indexFila) in filas" :key="indexFila" class="fila">
-          <div v-for="(butaca, indexButaca) in fila" :key="indexButaca" class="butaca">
-            <input type="checkbox" :id="`seat-${indexFila}-${indexButaca}`" v-model="butacaSeleccionada">
-            <label :for="`seat-${indexFila}-${indexButaca}`"></label>
-          </div>
-        </div>
-      </div>
-      <button @click="confirmarSeleccion">Confirmar selección</button>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
+  <div class="cinema">
+    <Row v-for="(row, index) in rows" :key="index" :seats="row" @toggle-select="toggleSelect" />
+  </div>
+
+  <h1>Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
+  <!-- Muestra el importe total aquí -->
+  <h2>Importe total: {{ totalAmount }}€</h2>
+
+  <button @click="confirmPurchase">Confirmar compra</button>
+</template>
+
+
+<script>
+import Row from '~/components/Row.vue';
+import { usePurchaseStore } from '~/store/store.js';
+
+
+export default {
+  components: { Row },
+  data() {
+    return {
+      rows: this.generateSeats(10, 12),
+      selectedSeats: [], // Mantiene un registro de los asientos seleccionados
+    };
+  },
+  computed: {
+    sesionesFiltradas() {
+      const idParam = parseInt(this.$route.params.id);
+      return this.sesiones.filter(sesion => sesion.id === idParam);
+    },
+    entryData() {
       return {
-        filas: [],
-        butacaSeleccionada: [],
+        sessionId: this.sesion.id,
+        movieTitle: this.sesion.pelicula.titol,
+        selectedSeats: this.selectedSeats,
+        totalAmount: this.totalAmount
       };
     },
-    mounted() {
-      // Generar las filas y butacas
-      for (let fila = 1; fila <= 10; fila++) {
-        const butacas = [];
-        for (let butaca = 1; butaca <= 12; butaca++) {
-          butacas.push({ numero: butaca });
-        }
-        this.filas.push(butacas);
+    totalAmount() {
+      // Calcula el importe total multiplicando el número de asientos seleccionados por 6€
+      return this.selectedSeats.length * 6;
+    },
+  },
+  async mounted() {
+    await this.fetchSesiones();
+    this.setSession();
+  },
+  methods: {
+    setSession() {
+      if (this.sesionesFiltradas && this.sesionesFiltradas.length > 0) {
+        // Asumiendo que `sesionesFiltradas` siempre contiene al menos un elemento y es el correcto
+        this.sesion = this.sesionesFiltradas[0];
       }
     },
-    methods: {
-      confirmarSeleccion() {
-        const butacasSeleccionadas = [];
-        this.filas.forEach((fila, indexFila) => {
-          fila.forEach((butaca, indexButaca) => {
-            if (this.butacaSeleccionada[indexFila][indexButaca]) {
-              butacasSeleccionadas.push(`Fila ${indexFila + 1}, Butaca ${indexButaca + 1}`);
-            }
-          });
-        });
-        console.log('Butacas seleccionadas:', butacasSeleccionadas);
-        // Aquí puedes enviar las butacas seleccionadas a través de una llamada API o hacer lo que necesites con ellas
+    async fetchSesiones() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        this.sesiones = data;
+
+      } catch (error) {
+        console.error("Could not fetch sessions: ", error);
       }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .seat-selection {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .seat-map {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .fila {
-    display: flex;
-  }
-  
-  .butaca {
-    margin: 5px;
-  }
-  
-  input[type="checkbox"] {
-    display: none;
-  }
-  
-  label {
-    display: block;
-    width: 20px;
-    height: 20px;
-    background-color: #ccc;
-    border: 1px solid #888;
-    cursor: pointer;
-  }
-  
-  input[type="checkbox"]:checked + label {
-    background-color: #007bff;
-  }
-  </style>
-  
+    },
+    generateSeats(rows, seatsPerRow) {
+      let allRows = [];
+      for (let i = 0; i < rows; i++) {
+        let row = [];
+        for (let j = 0; j < seatsPerRow; j++) {
+          row.push({ id: `${i}-${j}`, number: j + 1, occupied: false, selected: false });
+        }
+        allRows.push(row);
+      }
+      return allRows;
+    },
+    toggleSelect(seat) {
+      // Verifica si el asiento ya está seleccionado; si lo está, permite deseleccionarlo
+      if (seat.selected) {
+        seat.selected = false;
+        this.updateSelectedSeats();
+        return;
+      }
+      // Verifica el límite de asientos seleccionados antes de seleccionar otro
+      if (this.selectedSeats.length < 10) {
+        seat.selected = true;
+        this.updateSelectedSeats();
+      } else {
+        // Opcional: Muestra un mensaje de alerta si se intenta seleccionar más de 10 asientos
+        alert("No puedes seleccionar más de 10 asientos.");
+      }
+    },
+    updateSelectedSeats() {
+      let newSelectedSeats = [];
+      this.rows.forEach((row, rowIndex) => {
+        row.forEach((seat) => {
+          if (seat.selected && !seat.occupied) {
+            newSelectedSeats.push(`${rowIndex + 1}-${seat.number}`);
+          }
+        });
+      });
+      this.selectedSeats = newSelectedSeats;
+    },
+
+    confirmPurchase() {
+      if (!this.sesion) {
+        console.error('Sesión no definida.');
+        return;
+      }
+
+      const entryData = {
+        sessionId: this.sesion.id,
+        movieTitle: this.sesion.pelicula.titol,
+        selectedSeats: this.selectedSeats,
+        totalAmount: this.totalAmount
+      };
+      
+      // Aquí es donde guardamos los datos en Pinia
+      const purchaseStore = usePurchaseStore();
+      purchaseStore.saveEntryData(entryData);
+      
+      console.log('Confirmar compra:', entryData);
+      
+      // Aquí podrías redirigir al usuario a otra página si es necesario
+    },
+  },
+
+
+
+};
+</script>
