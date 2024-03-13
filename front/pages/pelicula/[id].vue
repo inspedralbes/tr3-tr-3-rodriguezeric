@@ -2,15 +2,14 @@
   <div class="cinema-home">
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
-      <div v-for="sesion in sesiones" :key="sesion.id">
-        <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
-          <div class="movie-card">
-            <h2>{{ sesion.pelicula.titol }}</h2>
-            <img :src="sesion.pelicula.poster" alt="Poster" />
-            <p>Día: {{ sesion.dia }}</p>
-            <p>Hora: {{ sesion.hora }}</p>
-          </div>
-        </nuxt-link>
+      <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
+        <h2>{{ sesion.pelicula.titol }}</h2>
+        <img :src="sesion.pelicula.poster" alt="Poster" />
+        <p>Día: {{ sesion.dia }}</p>
+        <p>Hora: {{ sesion.hora }}</p>
+        <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
+        <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
+        <nuxt-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</nuxt-link>
       </div>
     </div>
   </div>
@@ -25,6 +24,13 @@ export default {
   },
   async mounted() {
     await this.fetchSesiones();
+    
+  },
+  computed: {
+    sesionesFiltradas() {
+      const idParam = parseInt(this.$route.params.id);
+      return this.sesiones.filter(sesion => sesion.id === idParam);
+    }
   },
   methods: {
     async fetchSesiones() {
@@ -42,8 +48,6 @@ export default {
   }
 };
 </script>
-
-
 
 <style scoped>
 .cinema-home {
@@ -76,16 +80,17 @@ export default {
   margin-bottom: 10px;
 }
 
-/* Apply styles to MovieCard component */
-.movie-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin: 10px;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out;
+.back-button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 
-.movie-card:hover {
-  transform: scale(1.05);
+.back-button:hover {
+  background-color: #0056b3;
 }
 </style>

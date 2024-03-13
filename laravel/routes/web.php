@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\SessioController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +18,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+use App\Http\Controllers\PeliculaController;
+
+Route::get('/peliculas', [PeliculaController::class, 'index']);
+Route::get('/peliculas/{id}', [PeliculaController::class, 'show']);
+
+
+Route::get('/sesiones', [SessioController::class, 'index']);
+Route::get('/sesiones/{id}', [SessioController::class, 'show']);
+
+
+// Añade más rutas según necesites
