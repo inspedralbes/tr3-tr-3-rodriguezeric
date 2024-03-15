@@ -6,12 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entrada extends Model
 {
-    protected $table = 'entradas';
-
-    protected $fillable = ['id_sesion', 'id_butaca', 'precio'];
-
-    public function sesion()
-    {
-        return $this->belongsTo(Sessio::class, 'id_sesion');
-    }
+    protected $fillable = ['session_id', 'movie_title', 'selected_seats', 'total_amount'];
 }

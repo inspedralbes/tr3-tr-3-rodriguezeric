@@ -9,24 +9,15 @@ class EntradaController extends Controller
 {
     public function store(Request $request)
     {
-        // Valida los datos de la entrada
-        $request->validate([
-            'id_sesion' => 'required|exists:sessios,id',
-            'id_butaca' => 'required|exists:butacas,id',
-            'precio' => 'required|numeric|min:0',
+        $validatedData = $request->validate([
+            'session_id' => 'required|integer|exists:sessions,id',
+            'movie_title' => 'required|string',
+            'selected_seats' => 'required|string',
+            'total_amount' => 'required|numeric',
         ]);
 
-        // Crea una nueva entrada
-        $entrada = new Entrada([
-            'id_sesion' => $request->id_sesion,
-            'id_butaca' => $request->id_butaca,
-            'precio' => $request->precio,
-        ]);
+        $entrada = Entrada::create($validatedData);
 
-        // Guarda la entrada en la base de datos
-        $entrada->save();
-
-        // Retorna una respuesta exitosa
-        return response()->json(['message' => 'Entrada creada exitosamente'], 201);
+        return response()->json(['message' => 'Entrada creada con éxito', 'data' => $entrada], 201);
     }
 }

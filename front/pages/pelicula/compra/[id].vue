@@ -8,12 +8,21 @@
   <h2>Importe total: {{ totalAmount }}€</h2>
 
   <button @click="confirmPurchase">Confirmar compra</button>
+
+  <div v-if="showConfirmation">
+    <h3>Datos de confirmación:</h3>
+    <p>Sesión: {{ entryData.sessionId }}</p>
+    <p>Título de la película: {{ entryData.movieTitle }}</p>
+    <p>Asientos seleccionados: {{ entryData.selectedSeats.join(', ') }}</p>
+    <p>Importe total: {{ entryData.totalAmount }}€</p>
+  </div>
+
 </template>
 
 
 <script>
 import Row from '~/components/Row.vue';
-import { usePurchaseStore } from '~/store/store.js';
+//import { usePurchaseStore } from '~/store/store.js';
 
 
 export default {
@@ -22,6 +31,8 @@ export default {
     return {
       rows: this.generateSeats(10, 12),
       selectedSeats: [], // Mantiene un registro de los asientos seleccionados
+      showConfirmation: false // Agrega esta línea para declarar la propiedad showConfirmation
+
     };
   },
   computed: {
@@ -106,27 +117,49 @@ export default {
     },
 
     confirmPurchase() {
-      if (!this.sesion) {
-        console.error('Sesión no definida.');
-        return;
-      }
+  if (!this.sesion) {
+    alert('Sesión no definida.');
+    return;
+  }
 
-      const entryData = {
-        sessionId: this.sesion.id,
-        movieTitle: this.sesion.pelicula.titol,
-        selectedSeats: this.selectedSeats,
-        totalAmount: this.totalAmount
-      };
-      
-      // Aquí es donde guardamos los datos en Pinia
-      const purchaseStore = usePurchaseStore();
-      purchaseStore.saveEntryData(entryData);
-      
-      console.log('Confirmar compra:', entryData);
-      
-      // Aquí podrías redirigir al usuario a otra página si es necesario
+  const entryData = {
+    sessionId: this.sesion.id,
+    movieTitle: this.sesion.pelicula.titol,
+    selectedSeats: this.selectedSeats,
+    totalAmount: this.totalAmount
+  };
+
+  console.log('Confirmar compra:', entryData);
+
+  fetch('http://127.0.0.1:8000/api/entradas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Authorization': 'Bearer tu_token_aquí', // Si usas autenticación
     },
+    body: JSON.stringify(entryData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json(); // Si esperas una respuesta JSON
+    })
+    .then(data => {
+      console.log('Entry data saved successfully', data);
+      this.showConfirmation = true;
+      // Opcional: redirigir al usuario o mostrar mensaje de éxito
+    })
+    .catch(error => {
+      console.error('Could not save entry data:', error);
+      alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.'); // Mejor manejo de errores para el usuario
+    });
+}
+
   },
+
+
+
 
 
 
