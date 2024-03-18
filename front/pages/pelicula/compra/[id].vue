@@ -1,29 +1,28 @@
 <template>
-  <div class="cinema">
-    <Row v-for="(row, index) in rows" :key="index" :seats="row" @toggle-select="toggleSelect" />
+  <div>
+    <div class="cinema" v-if="!showConfirmation">
+      <Row v-for="(row, index) in rows" :key="index" :seats="row" @toggle-select="toggleSelect" />
+    </div>
+
+    <h1 v-if="!showConfirmation">Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
+    <!-- Muestra el importe total aquí -->
+    <h2 v-if="!showConfirmation">Importe total: {{ totalAmount }}€</h2>
+
+    <button v-if="!showConfirmation" @click="confirmPurchase">Confirmar compra</button>
+
+    <div v-if="showConfirmation">
+      <h3>Datos de confirmación:</h3>
+      <p>Sesión: {{ entryData.sessionId }}</p>
+      <p>Título de la película: {{ entryData.movieTitle }}</p>
+      <p>Asientos seleccionados: {{ entryData.selectedSeats.join(', ') }}</p>
+      <p>Importe total: {{ entryData.totalAmount }}€</p>
+    </div>
   </div>
-
-  <h1>Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
-  <!-- Muestra el importe total aquí -->
-  <h2>Importe total: {{ totalAmount }}€</h2>
-
-  <button @click="confirmPurchase">Confirmar compra</button>
-
-  <div v-if="showConfirmation">
-    <h3>Datos de confirmación:</h3>
-    <p>Sesión: {{ entryData.sessionId }}</p>
-    <p>Título de la película: {{ entryData.movieTitle }}</p>
-    <p>Asientos seleccionados: {{ entryData.selectedSeats.join(', ') }}</p>
-    <p>Importe total: {{ entryData.totalAmount }}€</p>
-  </div>
-
 </template>
-
 
 <script>
 import Row from '~/components/Row.vue';
 //import { usePurchaseStore } from '~/store/store.js';
-
 
 export default {
   components: { Row },
@@ -32,7 +31,6 @@ export default {
       rows: this.generateSeats(10, 12),
       selectedSeats: [], // Mantiene un registro de los asientos seleccionados
       showConfirmation: false // Agrega esta línea para declarar la propiedad showConfirmation
-
     };
   },
   computed: {
@@ -72,7 +70,6 @@ export default {
         }
         const data = await response.json();
         this.sesiones = data;
-
       } catch (error) {
         console.error("Could not fetch sessions: ", error);
       }
@@ -115,51 +112,39 @@ export default {
       });
       this.selectedSeats = newSelectedSeats;
     },
-
     confirmPurchase() {
-  if (!this.sesion) {
-    alert('Sesión no definida.');
-    return;
-  }
-
-  const entryData = {
-    session_id: this.sesion.id,
-    movie_title: this.sesion.pelicula.titol,
-    selected_seats: this.selectedSeats.join(', '), // Convertir a cadena de texto
-    total_amount: this.totalAmount
-  };
-
-  fetch('http://127.0.0.1:8000/api/entrada', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+      if (!this.sesion) {
+        alert('Sesión no definida.');
+        return;
+      }
+      const entryData = {
+        session_id: this.sesion.id,
+        movie_title: this.sesion.pelicula.titol,
+        selected_seats: this.selectedSeats.join(', '), // Convertir a cadena de texto
+        total_amount: this.totalAmount
+      };
+      fetch('http://127.0.0.1:8000/api/entrada', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(entryData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Entry data saved successfully', data);
+        this.showConfirmation = true;
+      })
+      .catch(error => {
+        console.error('Could not save entry data:', error);
+        alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
+      });
     },
-    body: JSON.stringify(entryData)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Entry data saved successfully', data);
-    this.showConfirmation = true;
-    // Puedes agregar aquí cualquier lógica adicional, como mostrar un mensaje de confirmación al usuario
-  })
-  .catch(error => {
-    console.error('Could not save entry data:', error);
-    alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
-  });
-}
-
-
   },
-
-
-
-
-
-
 };
 </script>

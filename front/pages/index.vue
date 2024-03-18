@@ -5,8 +5,8 @@
       <div v-for="sesion in sesiones" :key="sesion.id">
         <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
           <div class="movie-card">
+            <div class="poster"><img :src="sesion.pelicula.poster" alt="Poster" /></div>
             <h2>{{ sesion.pelicula.titol }}</h2>
-            <img :src="sesion.pelicula.poster" alt="Poster" />
             <p>Día: {{ sesion.dia }}</p>
             <p>Hora: {{ sesion.hora }}</p>
           </div>
@@ -46,18 +46,26 @@ export default {
 
 
 <style scoped>
+body{
+  margin: 0;
+  padding: 0;
+}
+
+
+
+
 .cinema-home {
+  text-align: center;
   max-width: 800px;
   margin: auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
 }
 
-.movie-of-the-day {
-  background-color: #f8f8f8;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.sesion-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
 }
 
 .showtime {
@@ -78,11 +86,22 @@ export default {
 
 /* Apply styles to MovieCard component */
 .movie-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin: 10px;
+  text-align: center;
+  width: 300px;
   border-radius: 8px;
   transition: transform 0.2s ease-in-out;
+  background-color: #BF0426;
+}
+
+.poster{
+  margin: auto;
+  border-radius: 8px;
+
+}
+
+.poster img{
+  width: 100%;
+  border-radius: 8px 8px 0 0;
 }
 
 .movie-card:hover {
