@@ -123,38 +123,36 @@ export default {
   }
 
   const entryData = {
-    sessionId: this.sesion.id,
-    movieTitle: this.sesion.pelicula.titol,
-    selectedSeats: this.selectedSeats,
-    totalAmount: this.totalAmount
+    session_id: this.sesion.id,
+    movie_title: this.sesion.pelicula.titol,
+    selected_seats: this.selectedSeats.join(', '), // Convertir a cadena de texto
+    total_amount: this.totalAmount
   };
 
-  console.log('Confirmar compra:', entryData);
-
-  fetch('http://127.0.0.1:8000/api/entradas', {
+  fetch('http://127.0.0.1:8000/api/entrada', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': 'Bearer tu_token_aquí', // Si usas autenticación
     },
     body: JSON.stringify(entryData)
   })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json(); // Si esperas una respuesta JSON
-    })
-    .then(data => {
-      console.log('Entry data saved successfully', data);
-      this.showConfirmation = true;
-      // Opcional: redirigir al usuario o mostrar mensaje de éxito
-    })
-    .catch(error => {
-      console.error('Could not save entry data:', error);
-      alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.'); // Mejor manejo de errores para el usuario
-    });
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Entry data saved successfully', data);
+    this.showConfirmation = true;
+    // Puedes agregar aquí cualquier lógica adicional, como mostrar un mensaje de confirmación al usuario
+  })
+  .catch(error => {
+    console.error('Could not save entry data:', error);
+    alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
+  });
 }
+
 
   },
 
