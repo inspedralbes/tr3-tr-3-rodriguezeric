@@ -6,9 +6,8 @@
         <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
           <div class="movie-card">
             <div class="poster"><img :src="sesion.pelicula.poster" alt="Poster" /></div>
-            <h2>{{ sesion.pelicula.titol }}</h2>
-            <p>Día: {{ sesion.dia }}</p>
-            <p>Hora: {{ sesion.hora }}</p>
+            <h2 id="titol_cartellera">{{ sesion.pelicula.titol }}</h2>
+            
           </div>
         </nuxt-link>
       </div>
@@ -56,7 +55,7 @@ body{
 
 .cinema-home {
   text-align: center;
-  max-width: 800px;
+  width: 90%;
   margin: auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
@@ -64,8 +63,9 @@ body{
 
 .sesion-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 10px;
+  margin: auto;
 }
 
 .showtime {
@@ -87,10 +87,12 @@ body{
 /* Apply styles to MovieCard component */
 .movie-card {
   text-align: center;
-  width: 300px;
+  width: 400px;
   border-radius: 8px;
   transition: transform 0.2s ease-in-out;
-  background-color: #BF0426;
+  background-color: #2e048f;
+  margin: auto;
+  padding-bottom: 8px;
 }
 
 .poster{
@@ -102,10 +104,16 @@ body{
 .poster img{
   width: 100%;
   border-radius: 8px 8px 0 0;
-  height: 400px;
 }
 
 .movie-card:hover {
   transform: scale(1.05);
+}
+
+
+#titol_cartellera{
+  color: white;
+  margin: 10px 0;
+  font-size: 1.3em;
 }
 </style>

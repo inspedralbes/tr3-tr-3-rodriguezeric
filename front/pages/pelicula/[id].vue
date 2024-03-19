@@ -3,6 +3,11 @@
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
       <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
+        <div class="background-overlay">
+          <img :src="sesion.pelicula.poster" alt="Poster" />
+
+        </div>
+
         <h2>{{ sesion.pelicula.titol }}</h2>
         <img :src="sesion.pelicula.poster" alt="Poster" />
         <p>Día: {{ sesion.dia }}</p>
@@ -51,10 +56,28 @@ export default {
 
 <style scoped>
 .cinema-home {
+  position: relative;
   max-width: 800px;
   margin: auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/path/to/your/image.jpg'); /* Reemplaza con la ruta de tu imagen */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5; /* Ajusta la opacidad según lo necesites */
+  z-index: -1; /* Coloca la capa detrás del contenido */
+}
+
+.background-overlay img {
+width: 100%;
 }
 
 .movie-of-the-day {

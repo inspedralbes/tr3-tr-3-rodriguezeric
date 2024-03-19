@@ -8,9 +8,10 @@
     <h1 v-if="!showConfirmation">Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
     <!-- Muestra el importe total aquí -->
     <h2 v-if="!showConfirmation">Importe total: {{ totalAmount }}€</h2>
+    <button @click="goBack">Volver</button>
 
     <button v-if="!showConfirmation" @click="confirmPurchase">Confirmar compra</button>
-
+    
     <div v-if="showConfirmation">
       <h3>Datos de confirmación:</h3>
       <p>Sesión: {{ entryData.sessionId }}</p>
@@ -80,7 +81,10 @@ export default {
       }
     },
 
-
+    goBack() {
+      // Usa this.$router.go(-1) para volver a la página anterior
+      this.$router.go(-1);
+    },
 
     setSession() {
       if (this.sesionesFiltradas && this.sesionesFiltradas.length > 0) {
