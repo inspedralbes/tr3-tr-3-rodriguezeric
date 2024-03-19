@@ -28,4 +28,7 @@ class EntradaController extends Controller
         return response()->json(['message' => 'Entrada creada con éxito', 'entrada' => $entrada], 201);
         
     }
+    public function index() {
+        return Entrada::all();
+    }
 }

@@ -102,6 +102,7 @@ body{
 .poster img{
   width: 100%;
   border-radius: 8px 8px 0 0;
+  height: 400px;
 }
 
 .movie-card:hover {

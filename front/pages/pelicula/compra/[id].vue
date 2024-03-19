@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="cinema" v-if="!showConfirmation">
-      <Row v-for="(row, index) in rows" :key="index" :seats="row" @toggle-select="toggleSelect" />
+      <Row v-for="(row, index) in rows" :key="index" :seats="row" :occupiedSeats="occupiedSeats"
+        @toggle-select="toggleSelect" />
     </div>
 
     <h1 v-if="!showConfirmation">Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
@@ -22,15 +23,15 @@
 
 <script>
 import Row from '~/components/Row.vue';
-//import { usePurchaseStore } from '~/store/store.js';
 
 export default {
   components: { Row },
   data() {
     return {
       rows: this.generateSeats(10, 12),
-      selectedSeats: [], // Mantiene un registro de los asientos seleccionados
-      showConfirmation: false // Agrega esta línea para declarar la propiedad showConfirmation
+      selectedSeats: [],
+      showConfirmation: false,
+      occupiedSeats: [], // Array para almacenar los asientos ocupados
     };
   },
   computed: {
@@ -47,15 +48,40 @@ export default {
       };
     },
     totalAmount() {
-      // Calcula el importe total multiplicando el número de asientos seleccionados por 6€
       return this.selectedSeats.length * 6;
     },
   },
   async mounted() {
     await this.fetchSesiones();
     this.setSession();
+    this.fetchEntradas(); // Llama a la función para obtener las entradas al cargar la página
   },
   methods: {
+    async fetchEntradas() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/entradas');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const entradas = await response.json();
+        this.occupiedSeats = entradas
+          .filter(entrada => entrada.session_id === this.sesion.id) // Filtra las entradas por la sesión actual
+          .flatMap(entrada => {
+            // Ajustar los asientos ocupados restando 1 al número de fila y asiento
+            return entrada.selected_seats.split(', ').map(seat => {
+              const [row, number] = seat.split('-').map(val => parseInt(val));
+              return `${row - 1}-${number - 1}`;
+            });
+          });
+
+        console.log('Asientos ocupados:', this.occupiedSeats);
+      } catch (error) {
+        console.error("Could not fetch entradas: ", error);
+      }
+    },
+
+
+
     setSession() {
       if (this.sesionesFiltradas && this.sesionesFiltradas.length > 0) {
         // Asumiendo que `sesionesFiltradas` siempre contiene al menos un elemento y es el correcto
@@ -92,6 +118,13 @@ export default {
         this.updateSelectedSeats();
         return;
       }
+
+      // Verifica si el asiento está ocupado; si lo está, no permite seleccionarlo
+      if (this.isSeatOccupied(seat)) {
+        alert("Este asiento está ocupado y no se puede seleccionar.");
+        return;
+      }
+
       // Verifica el límite de asientos seleccionados antes de seleccionar otro
       if (this.selectedSeats.length < 10) {
         seat.selected = true;
@@ -101,6 +134,12 @@ export default {
         alert("No puedes seleccionar más de 10 asientos.");
       }
     },
+
+    isSeatOccupied(seat) {
+      // Verifica si el asiento está en la lista de asientos ocupados
+      return this.occupiedSeats.includes(`${seat.row - 1}-${seat.number - 1}`);
+    },
+
     updateSelectedSeats() {
       let newSelectedSeats = [];
       this.rows.forEach((row, rowIndex) => {
@@ -130,20 +169,20 @@ export default {
         },
         body: JSON.stringify(entryData)
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Entry data saved successfully', data);
-        this.showConfirmation = true;
-      })
-      .catch(error => {
-        console.error('Could not save entry data:', error);
-        alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
-      });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Entry data saved successfully', data);
+          this.showConfirmation = true;
+        })
+        .catch(error => {
+          console.error('Could not save entry data:', error);
+          alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
+        });
     },
   },
 };
