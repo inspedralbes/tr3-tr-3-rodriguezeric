@@ -27,7 +27,7 @@ Route::get('/sesiones/{id}', [SessioController::class, 'show']);
 
 Route::post('/entrada', [EntradaController::class, 'store']);
 Route::get('/entradas', [EntradaController::class, 'index']);
-
+Route::post('/entradas/{id}/enviar-correo', [EntradaController::class, 'sendEmail']);
 
 
 

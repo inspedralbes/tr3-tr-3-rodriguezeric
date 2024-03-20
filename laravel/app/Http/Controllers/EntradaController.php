@@ -28,6 +28,39 @@ class EntradaController extends Controller
         return response()->json(['message' => 'Entrada creada con éxito', 'entrada' => $entrada], 201);
         
     }
+
+    public function sendEmail(Request $request)
+    {
+        // Obtén el ID de la entrada desde la solicitud
+        $entradaId = $request->entrada_id;
+
+        // Obtén la entrada desde la base de datos utilizando el ID
+        $entrada = Entrada::find($entradaId);
+
+        if (!$entrada) {
+            return response()->json(['message' => 'Entrada no encontrada'], 404);
+        }
+
+        // Obtén el correo electrónico del destinatario desde la solicitud
+        $correoDestinatario = $request->correoElectronico;
+
+        // Prepara el contenido del correo electrónico
+        $subject = 'Detalles de la entrada';
+        $message = "Detalles de la entrada:\n\n";
+        $message .= "ID de sesión: " . $entrada->session_id . "\n";
+        $message .= "Título de la película: " . $entrada->movie_title . "\n";
+        $message .= "Asientos seleccionados: " . $entrada->selected_seats . "\n";
+        $message .= "Monto total: " . $entrada->total_amount . "\n";
+
+        // Envía el correo electrónico
+        $headers = 'From: a22erirodnos@inspedralbes.cat' . "\r\n" .
+                   'Reply-To: a22erirodnos@inspedralbes.cat' . "\r\n" .
+                   'X-Mailer: PHP/' . phpversion();
+        mail($correoDestinatario, $subject, $message, $headers);
+
+        return response()->json(['message' => 'Email enviado con éxito'], 200);
+    }
+
     public function index() {
         return Entrada::all();
     }

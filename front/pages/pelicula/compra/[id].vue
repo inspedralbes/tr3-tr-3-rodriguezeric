@@ -18,12 +18,21 @@
       <p>Título de la película: {{ entryData.movieTitle }}</p>
       <p>Asientos seleccionados: {{ entryData.selectedSeats.join(', ') }}</p>
       <p>Importe total: {{ entryData.totalAmount }}€</p>
+    
+    <!-- Campo de entrada de correo electrónico -->
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" v-model="correoElectronico">
+
+    <!-- Botón para enviar la entrada al correo -->
+    <button @click="enviarEntradaPorCorreo">Enviar al correo</button>
+    
     </div>
   </div>
 </template>
 
 <script>
 import Row from '~/components/Row.vue';
+import { useMovieStore } from '~/store/store.js';
 
 export default {
   components: { Row },
@@ -56,6 +65,8 @@ export default {
     await this.fetchSesiones();
     this.setSession();
     this.fetchEntradas(); // Llama a la función para obtener las entradas al cargar la página
+    const idParam = parseInt(this.$route.params.id);
+    useMovieStore().setCurrentMovieId(idParam);
   },
   methods: {
     async fetchEntradas() {
@@ -104,6 +115,8 @@ export default {
         console.error("Could not fetch sessions: ", error);
       }
     },
+
+    
     generateSeats(rows, seatsPerRow) {
       let allRows = [];
       for (let i = 0; i < rows; i++) {
@@ -188,6 +201,45 @@ export default {
           alert('Ocurrió un error al guardar los datos de la entrada. Por favor, intenta de nuevo.');
         });
     },
+    enviarEntradaPorCorreo() {
+  // Verifica que se haya ingresado un correo electrónico
+  if (!this.correoElectronico) {
+    alert('Por favor, ingresa un correo electrónico.');
+    return;
+  }
+
+  // Crea un objeto con los datos de la entrada y el correo electrónico
+  const datosCorreo = {
+    entryData: this.entryData,
+    correoElectronico: this.correoElectronico
+  };
+
+  // Realiza una solicitud POST al servidor Laravel para enviar los datos por correo
+  fetch(`http://127.0.0.1:8000/api/entradas/1/enviar-correo`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(datosCorreo)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al enviar los datos por correo.');
+      }
+      // Manejar la respuesta del servidor, si es necesario
+      return response.json();
+    })
+    .then(data => {
+      console.log('Datos enviados por correo:', data);
+      // Aquí puedes mostrar un mensaje de éxito al usuario, o redirigirlo a otra página, etc.
+      alert('Los datos se han enviado por correo electrónico con éxito.');
+    })
+    .catch(error => {
+      console.error('Error al enviar los datos por correo:', error);
+      // Aquí puedes mostrar un mensaje de error al usuario, si es necesario
+      alert('Ocurrió un error al enviar los datos por correo. Por favor, intenta de nuevo.');
+    });
+},
   },
 };
 </script>
