@@ -14,6 +14,7 @@ class CreateEntradasTable extends Migration
             $table->string('movie_title');
             $table->text('selected_seats');
             $table->decimal('total_amount', 8, 2);
+            $table->string('email')->nullable(); // Agregar un campo para el correo electrónico
             $table->timestamps();
         });
     }

@@ -3,7 +3,6 @@
     :class="['seat', { 'seat--occupied': isOccupied(seat), 'seat--selected': seat.selected }]"
     @click="toggleSelect"
   >
-    <span class="seat__number">{{ seat.number }}</span>
   </div>
 </template>
 
@@ -28,9 +27,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin: 5px;
+  width: 70%;
+  height: 80%;
+  margin: 50%;
   background-color: #f0f0f0;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
