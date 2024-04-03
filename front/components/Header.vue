@@ -1,20 +1,43 @@
 <template>
-    <header class="header">
-        <div class="logo">
-            <!-- Add your cinema logo here -->
-            <h1>LOGO</h1>
-        </div>
-        <div class="actions">
-            <button class="login-register-button" @click="toggleLoginForm">Login/Register</button>
-        </div>
+    <div>
+        <header class="header">
+            <div class="logo">
+                <!-- Add your cinema logo here -->
+                <h1>LOGO</h1>
+            </div>
+            <div class="actions">
+                <div class="dropdown">
+                    <button class="dropbtn" @click="showLoginForm = !showLoginForm">Login</button>
+                    <div class="dropdown-content" v-show="showLoginForm">
+                        <h2>Login</h2>
+                        <form @submit.prevent="login">
+                            <input type="email" v-model="email" placeholder="Email" required>
+                            <input type="password" v-model="password" placeholder="Password" required>
+                            <button type="submit">Login</button>
+                        </form>
+                        <p v-if="errorMessage">{{ errorMessage }}</p>
+                        
+                        <router-link to="/register" class="register-button">No tens compte? Registra't!</router-link>
+                    </div>
 
-        <!-- Agregar el formulario de inicio de sesión aquí -->
-        <div v-if="showLoginForm" class="login-form">
-            <input type="text" placeholder="Correo electrónico" v-model="email">
-            <input type="password" placeholder="Contraseña" v-model="password">
-            <button @click="login">Iniciar sesión</button>
+
+                </div>
+
+            </div>
+        </header>
+
+        <div v-if="showRegisterForm">
+            <h2>Register</h2>
+            <form @submit.prevent="register">
+                <input type="text" v-model="name" placeholder="Name" required>
+                <input type="email" v-model="email" placeholder="Email" required>
+                <input type="password" v-model="password" placeholder="Password" required>
+                <input type="password" v-model="passwordConfirmation" placeholder="Confirm Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <p v-if="errorMessage">{{ errorMessage }}</p>
         </div>
-    </header>
+    </div>
 </template>
 
 <script>
@@ -23,21 +46,38 @@ export default {
         return {
             showLoginForm: false,
             email: '',
-            password: ''
+            password: '',
+            errorMessage: ''
         };
     },
     methods: {
-        toggleLoginForm() {
-            this.showLoginForm = !this.showLoginForm;
+        async login() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: this.email,
+                        password: this.password
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Credenciales inválidas');
+                }
+
+                const data = await response.json();
+                console.log(data);
+                console.log('Usuario autenticado:', data.user);
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                this.errorMessage = error.message || 'Error al iniciar sesión';
+            }
         },
-        login() {
-            // Aquí puedes agregar la lógica para enviar los datos de inicio de sesión al servidor
-            // Puedes utilizar Axios u otra librería para hacer la solicitud HTTP
-            console.log('Correo electrónico:', this.email);
-            console.log('Contraseña:', this.password);
-            
-            // Después de enviar los datos, podrías redirigir al usuario a otra página o realizar alguna otra acción
-        }
+
+
     }
 };
 </script>
@@ -65,30 +105,73 @@ export default {
     cursor: pointer;
 }
 
-/* Estilos del formulario de inicio de sesión */
-.login-form {
-    position: absolute;
-    top: 50px; /* Ajusta según sea necesario */
-    right: 10px; /* Ajusta según sea necesario */
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
-.login-form input {
-    display: block;
-    margin-bottom: 10px;
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.login-form button {
+
+.dropbtn {
     padding: 8px 16px;
     background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content h2 {
+    margin-top: 0;
+}
+
+.dropdown-content form {
+    margin-bottom: 0;
+}
+
+.dropdown-content p {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+p {
+    color: red;
+}
+
+.register-button {
+    color: #007bff;
+    text-decoration: none;
+    margin-left: 10px;
 }
 </style>

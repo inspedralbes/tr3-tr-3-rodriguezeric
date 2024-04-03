@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PeliculaController;
 use App\Http\Controllers\EntradaController;
-use App\Http\Controllers\AuthController; // Import AuthController
-use App\Http\Controllers\CorreoController; // Import CorreoController
+use App\Http\Controllers\AuthController; 
+use App\Http\Controllers\CorreoController; 
 
 
 
@@ -32,6 +32,8 @@ Route::post('/entrada', [EntradaController::class, 'store']);
 Route::get('/entradas', [EntradaController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/enviar-correo', [CorreoController::class, 'enviarCorreo']);
+
 
 
