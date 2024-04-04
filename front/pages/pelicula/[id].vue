@@ -1,27 +1,18 @@
 <template>
-  <Header />
   <div class="cinema-home">
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
       <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
-        <div class="background-overlay" :style="{ backgroundImage: 'url(' + sesion.pelicula.poster + ')' }">
-          <div class="gradient-overlay"></div>
-        </div>
         <h2>{{ sesion.pelicula.titol }}</h2>
-        <img id="poster" :src="sesion.pelicula.poster" alt="Poster" />
+        <img :src="sesion.pelicula.poster" alt="Poster" />
+        <p>Día: {{ sesion.dia }}</p>
+        <p>Hora: {{ sesion.hora }}</p>
+        <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
+        <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
+        <nuxt-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</nuxt-link>
       </div>
     </div>
   </div>
-  <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
-    <div id="info">
-      <p>Día: {{ sesion.dia }}</p>
-      <p>Hora: {{ sesion.hora }}</p>
-      <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
-      <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
-      <nuxt-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</nuxt-link>
-    </div>
-  </div>
- 
 </template>
 
 <script>
@@ -33,6 +24,7 @@ export default {
   },
   async mounted() {
     await this.fetchSesiones();
+    
   },
   computed: {
     sesionesFiltradas() {
@@ -59,33 +51,10 @@ export default {
 
 <style scoped>
 .cinema-home {
-  position: relative;
-  max-width: 80%;
-  height: 50%;
+  max-width: 800px;
   margin: auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
-}
-
-.background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.2;
-  z-index: -1;
-}
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, var(--fons) 0%, rgba(255, 255, 255, 0) 50%);
 }
 
 .movie-of-the-day {
@@ -123,19 +92,5 @@ export default {
 
 .back-button:hover {
   background-color: #0056b3;
-}
-
-#poster {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  height: 411px;
-}
-
-#info {
-  position: relative;
-  background-color: var(--fons);
-  margin: auto;
-  padding: 20px;
-  width: 80%;
-  font-family: Arial, Helvetica, sans-serif;
 }
 </style>
