@@ -8,10 +8,10 @@ class Entrada extends Model
 {
     protected $table = 'entradas';
 
-    protected $fillable = ['id_sesion', 'id_butaca', 'precio'];
+    protected $fillable = ['session_id', 'movie_title', 'selected_seats', 'total_amount'];
 
-    public function sesion()
+    public function session()
     {
-        return $this->belongsTo(Sessio::class, 'id_sesion');
+        return $this->belongsTo(Sessio::class, 'session_id');
     }
 }

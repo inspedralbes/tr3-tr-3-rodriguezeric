@@ -1,14 +1,14 @@
 <template>
+  <Header />
   <div class="cinema-home">
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
       <div v-for="sesion in sesiones" :key="sesion.id">
         <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
           <div class="movie-card">
-            <h2>{{ sesion.pelicula.titol }}</h2>
-            <img :src="sesion.pelicula.poster" alt="Poster" />
-            <p>Día: {{ sesion.dia }}</p>
-            <p>Hora: {{ sesion.hora }}</p>
+            <div class="poster"><img :src="sesion.pelicula.poster" alt="Poster" /></div>
+            <h2 id="titol_cartellera">{{ sesion.pelicula.titol }}</h2>
+            
           </div>
         </nuxt-link>
       </div>
@@ -46,18 +46,27 @@ export default {
 
 
 <style scoped>
+body{
+  margin: 0;
+  padding: 0;
+}
+
+
+
+
 .cinema-home {
-  max-width: 800px;
+  text-align: center;
+  width: 90%;
   margin: auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
 }
 
-.movie-of-the-day {
-  background-color: #f8f8f8;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.sesion-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+  margin: auto;
 }
 
 .showtime {
@@ -78,14 +87,34 @@ export default {
 
 /* Apply styles to MovieCard component */
 .movie-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin: 10px;
+  text-align: center;
+  width: 400px;
   border-radius: 8px;
   transition: transform 0.2s ease-in-out;
+  background-color: #2e048f;
+  margin: auto;
+  padding-bottom: 8px;
+}
+
+.poster{
+  margin: auto;
+  border-radius: 8px;
+
+}
+
+.poster img{
+  width: 100%;
+  border-radius: 8px 8px 0 0;
 }
 
 .movie-card:hover {
   transform: scale(1.05);
+}
+
+
+#titol_cartellera{
+  color: white;
+  margin: 10px 0;
+  font-size: 1.3em;
 }
 </style>
