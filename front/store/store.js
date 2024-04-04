@@ -1,14 +1,13 @@
-// stores/movie.js
+// stores/purchase.js
 import { defineStore } from 'pinia';
 
-export const useMovieStore = defineStore({
-  id: 'movie',
+export const usePurchaseStore = defineStore('purchase', {
   state: () => ({
-    currentMovieId: null,
+    entryData: null, // Aquí guardaremos los datos de la compra
   }),
   actions: {
-    setCurrentMovieId(id) {
-      this.currentMovieId = id;
-    },
-  },
+    saveEntryData(data) {
+      this.entryData = data;
+    }
+  }
 });
