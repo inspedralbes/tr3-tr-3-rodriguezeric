@@ -3,7 +3,7 @@
         <header class="header">
             <div class="logo">
                 <!-- Add your cinema logo here -->
-                <h1>LOGO</h1>
+                <h1></h1>
             </div>
             <div class="actions" v-if="!logged">
                 <div class="dropdown">
