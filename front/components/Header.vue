@@ -5,7 +5,7 @@
                 <!-- Add your cinema logo here -->
                 <h1>LOGO</h1>
             </div>
-            <div class="actions">
+            <div class="actions" v-if="!logged">
                 <div class="dropdown">
                     <button class="dropbtn" @click="showLoginForm = !showLoginForm">Login</button>
                     <div class="dropdown-content" v-show="showLoginForm">
@@ -16,13 +16,17 @@
                             <button type="submit">Login</button>
                         </form>
                         <p v-if="errorMessage">{{ errorMessage }}</p>
-                        
+
                         <router-link to="/register" class="register-button">No tens compte? Registra't!</router-link>
                     </div>
 
 
                 </div>
 
+            </div>
+            <div class="benvingut" v-if="logged">
+                <p>Benvingut, {{ this.name }}</p>
+                <button @click="logout">Logout</button>
             </div>
         </header>
 
@@ -41,14 +45,23 @@
 </template>
 
 <script>
+import { userStore } from '~/store/store.js';
+
 export default {
     data() {
         return {
             showLoginForm: false,
             email: '',
             password: '',
-            errorMessage: ''
+            errorMessage: '',
+            logged: false,
+            name: '', // Nuevo campo para almacenar el nombre del usuario
         };
+    },
+    mounted() {
+        this.logged = userStore().logged;
+        this.email = userStore().email;
+        this.name = userStore().name;
     },
     methods: {
         async login() {
@@ -69,16 +82,35 @@ export default {
                 }
 
                 const data = await response.json();
-                console.log(data);
-                console.log('Usuario autenticado:', data.user);
+                console.log('Usuario autenticado:', data);
+                this.logged = true;
+                userStore().setEmail(this.email); // Guardar email en el store
+                userStore().setName(data.name); // Guardar name en el store
+                userStore().setLogged(true); // Marcar como logueado
+                this.name = userStore().name; // Actualizar el nombre del usuario
             } catch (error) {
                 console.error('Error al iniciar sesión:', error);
                 this.errorMessage = error.message || 'Error al iniciar sesión';
             }
         },
 
-
-    }
+        async logout() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                this.logged = false;
+                userStore().setEmail(''); // Limpiar email en el store
+                userStore().setName(''); // Limpiar name en el store
+                userStore().setLogged(false); // Marcar como no logueado
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        },
+    },
 };
 </script>
 
@@ -165,8 +197,8 @@ button {
     cursor: pointer;
 }
 
-p {
-    color: red;
+.benvingut {
+    color: #007bff;
 }
 
 .register-button {

@@ -64,8 +64,11 @@ class AuthController extends Controller
 
     // Verificar las credenciales del usuario
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-        // Si las credenciales son válidas, redirigir al usuario a una ubicación después de iniciar sesión
-        return response()->json(['message' => 'Inicio de sesión exitoso'], 200);
+        // Si las credenciales son válidas, retornar los datos del usuario
+        return response()->json([
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email,
+        ], 200);
     }
 
     // Si las credenciales no son válidas, retornar un mensaje de error
@@ -76,6 +79,10 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('home');
+    }
+
+    public function user()
+    {
+        return Auth::all();
     }
 }

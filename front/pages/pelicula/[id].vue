@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="cinema-home">
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">

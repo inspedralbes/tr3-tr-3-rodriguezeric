@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="pantallaCompra">
     <div class="infoCompra">
       <h1 v-if="!showConfirmation">Asientos seleccionados: {{ selectedSeats.join(', ') }}</h1>
