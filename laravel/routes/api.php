@@ -24,9 +24,11 @@ use App\Http\Controllers\CorreoController;
 
 Route::get('/peliculas', [PeliculaController::class, 'index']);
 Route::get('/peliculas/{id}', [PeliculaController::class, 'show']);
+Route::post('/crear-pelicula', [PeliculaController::class, 'store']);
 
 Route::get('/sesiones', [SessioController::class, 'index']);
 Route::get('/sesiones/{id}', [SessioController::class, 'show']);
+Route::post('/crear-sessio', [SessioController::class, 'store']);
 
 Route::post('/entrada', [EntradaController::class, 'store']);
 Route::get('/entradas', [EntradaController::class, 'index']);

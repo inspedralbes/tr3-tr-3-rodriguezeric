@@ -68,12 +68,14 @@ class AuthController extends Controller
         return response()->json([
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
+            'type' => Auth::user()->type, // Agregar el campo 'type'
         ], 200);
     }
 
     // Si las credenciales no son válidas, retornar un mensaje de error
     return response()->json(['error' => 'Credenciales inválidas'], 401);
 }
+
 
     // Método para cerrar sesión
     public function logout()

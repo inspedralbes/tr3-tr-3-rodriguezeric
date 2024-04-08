@@ -17,7 +17,8 @@ export const userStore = defineStore({
   id: 'user',
   state: () => ({
     email: '',
-    name: '', // Añadir el campo name
+    name: '', 
+    type: '',
     logged: false,
   }),
   actions: {
@@ -29,6 +30,9 @@ export const userStore = defineStore({
     },
     setLogged(logged) {
       this.logged = logged;
+    },
+    setAdmin(type) {
+      this.type = type;
     },
   },
 });

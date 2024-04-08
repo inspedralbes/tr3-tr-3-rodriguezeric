@@ -2,8 +2,9 @@
     <div>
         <header class="header">
             <div class="logo">
-                <!-- Add your cinema logo here -->
-                <h1></h1>
+                
+                <h1><nuxt-link to="/">Home</nuxt-link></h1>
+                
             </div>
             <div class="actions" v-if="!logged">
                 <div class="dropdown">
@@ -27,8 +28,12 @@
             <div class="benvingut" v-if="logged">
                 <p>Benvingut, {{ this.name }}</p>
                 <button @click="logout">Logout</button>
+                <nuxt-link to="/entrades">Entrades</nuxt-link>
+                <nuxt-link to="/admin">Admin</nuxt-link>
             </div>
+            
         </header>
+
 
         <div v-if="showRegisterForm">
             <h2>Register</h2>
@@ -53,6 +58,7 @@ export default {
             showLoginForm: false,
             email: '',
             password: '',
+            type: '', 
             errorMessage: '',
             logged: false,
             name: '', // Nuevo campo para almacenar el nombre del usuario
@@ -62,7 +68,10 @@ export default {
         this.logged = userStore().logged;
         this.email = userStore().email;
         this.name = userStore().name;
+        this.type = userStore().type;
     },
+    
+
     methods: {
         async login() {
             try {
@@ -73,7 +82,8 @@ export default {
                     },
                     body: JSON.stringify({
                         email: this.email,
-                        password: this.password
+                        password: this.password,
+                        type: this.type,
                     })
                 });
 
@@ -83,11 +93,13 @@ export default {
 
                 const data = await response.json();
                 console.log('Usuario autenticado:', data);
+                console.log('Admin: ',data.type);
                 this.logged = true;
                 userStore().setEmail(this.email); // Guardar email en el store
                 userStore().setName(data.name); // Guardar name en el store
                 userStore().setLogged(true); // Marcar como logueado
                 this.name = userStore().name; // Actualizar el nombre del usuario
+                userStore().setAdmin(data.type); // Marcar como administrador
             } catch (error) {
                 console.error('Error al iniciar sesión:', error);
                 this.errorMessage = error.message || 'Error al iniciar sesión';
@@ -106,6 +118,7 @@ export default {
                 userStore().setEmail(''); // Limpiar email en el store
                 userStore().setName(''); // Limpiar name en el store
                 userStore().setLogged(false); // Marcar como no logueado
+                userStore().setAdmin(''); // Marcar como no administrador
             } catch (error) {
                 console.error('Error al cerrar sesión:', error);
             }
@@ -120,7 +133,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #f2f2f2;
+    background-color: #bebebe;
+    color: black;
 }
 
 .logo img {
