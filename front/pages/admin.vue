@@ -5,7 +5,7 @@
     <div class="links-container">
       <NuxtLink to="/crear-pelicula/" class="link">Crear Pel·lícula</NuxtLink>
       <NuxtLink to="/crear-sessio" class="link">Crear Sessió</NuxtLink>
-      <NuxtLink to="/editar-sessions" class="link">Editar Sessions</NuxtLink>
+      <NuxtLink to="/llistat-sessions" class="link">Llista de Sessions</NuxtLink>
     </div>
     <p class="total-recaudado">Recaudació total del cine: €{{ totalRecaudadoFormatted }}</p>
   </div>

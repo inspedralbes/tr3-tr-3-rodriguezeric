@@ -19,6 +19,7 @@ export const userStore = defineStore({
     email: '',
     name: '', 
     type: '',
+    sessionId: '',  
     logged: false,
   }),
   actions: {
@@ -33,6 +34,9 @@ export const userStore = defineStore({
     },
     setAdmin(type) {
       this.type = type;
+    },
+    setCurrentSessionId(sessionId) {
+      this.sessionId = sessionId;
     },
   },
 });

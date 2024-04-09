@@ -39,4 +39,44 @@ class SessioController extends Controller
         return response()->json(['message' => 'Sesión creada con éxito', 'session' => $session], 201);
     }
 
+    public function show($id){
+        $session = Sessio::with('pelicula')->find($id);
+        if ($session) {
+            return response()->json($session);
+        } else {
+            return response()->json(['message' => 'Sesión no encontrada'], 404);
+        }
+    }
+    
+    public function update(Request $request, $id){
+        $session = Sessio::find($id);
+        if ($session) {
+            $validatedData = $request->validate([
+                'dia' => 'required|date',
+                'hora' => 'required|date_format:H:i',
+                'pelicula_id' => 'required|integer|exists:peliculas,id'
+            ]);
+    
+            $session->dia = $request->dia;
+            $session->hora = $request->hora;
+            $session->pelicula_id = $request->pelicula_id;
+            $session->save();
+            
+            return response()->json(['message' => 'Sesión modificada con éxito', 'session' => $session]);
+        } else {
+            return response()->json(['message' => 'Sesión no encontrada'], 404);
+        }
+    }
+
+    public function destroy($id){
+        $session = Sessio::find($id);
+        if ($session) {
+            $session->delete();
+            return response()->json(['message' => 'Sesión eliminada con éxito']);
+        } else {
+            return response()->json(['message' => 'Sesión no encontrada'], 404);
+        }
+    }
+    
+
 }

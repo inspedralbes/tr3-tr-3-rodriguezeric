@@ -29,6 +29,8 @@ Route::post('/crear-pelicula', [PeliculaController::class, 'store']);
 Route::get('/sesiones', [SessioController::class, 'index']);
 Route::get('/sesiones/{id}', [SessioController::class, 'show']);
 Route::post('/crear-sessio', [SessioController::class, 'store']);
+Route::put('/modificar-sessio/{id}', [SessioController::class, 'update']);
+Route::delete('/eliminar-sessio/{id}', [SessioController::class, 'destroy']);
 
 Route::post('/entrada', [EntradaController::class, 'store']);
 Route::get('/entradas', [EntradaController::class, 'index']);
