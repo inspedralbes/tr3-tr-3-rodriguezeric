@@ -8,11 +8,7 @@
           <div class="movie-info">{{ sesion.pelicula.duracio }}</div>
           <div class="movie-info">{{ sesion.dia }}</div>
           <div class="movie-info">{{ sesion.hora }}</div>
-          <div class="movie-info">Recaudación total: {{ formatTotalRecaudado(sesion) }}</div>
-          <div class="movie-info">Entradas de la sesión:</div>
-          <div v-for="entrada in getEntradasPorSesion(sesion)" :key="entrada.id">
-            <div class="movie-info">{{ entrada }}</div>
-          </div>
+          <div class="movie-info">{{ sesion.total_recaudado }}</div>
         </NuxtLink>
       </div>
     </div>
@@ -52,27 +48,20 @@ export default {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         this.entradas = await response.json();
+        console.log('Entradas:', this.entradas);
       } catch (error) {
         console.error("Could not fetch entradas: ", error);
       }
     },
-    getEntradasPorSesion(sesion) {
-      return this.entradas.filter(entrada => entrada.sesion_id === sesion.id);
-    },
+    
     saveSessionId(sessionId) {
       userStore().setCurrentSessionId(sessionId);
     },
-    calcularTotalRecaudado(sesion) {
-      const entradasSesion = this.getEntradasPorSesion(sesion);
-      return entradasSesion.reduce((total, entrada) => total + entrada.total_amount, 0);
-    },
-    formatTotalRecaudado(sesion) {
-      const totalRecaudado = this.calcularTotalRecaudado(sesion);
-      return totalRecaudado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
   }
 };
 </script>
+
+
 
 <style scoped>
 .cinema-home {

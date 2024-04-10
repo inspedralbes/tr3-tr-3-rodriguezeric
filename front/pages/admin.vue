@@ -7,7 +7,9 @@
       <NuxtLink to="/crear-sessio" class="link">Crear Sessió</NuxtLink>
       <NuxtLink to="/llistat-sessions" class="link">Llista de Sessions</NuxtLink>
     </div>
-    <p class="total-recaudado">Recaudació total del cine: €{{ totalRecaudadoFormatted }}</p>
+    <div class="total-recaudado">
+      Total Recaudado: {{ calculateTotalRecaudado() }}
+    </div>
   </div>
 </template>
 
@@ -22,37 +24,49 @@ export default {
   data() {
     return {
       entrades: [],
+      sesiones: [],
     };
   },
   async mounted() {
     await this.fetchEntrades();
+    await this.fetchSesiones();
+
   },
-  computed: {
-    totalRecaudadoFormatted() {
-      let total = 0;
-      for (let i = 0; i < this.entrades.length; i++) {
-        total += this.entrades[i].total_amount;
-      }
-      return total.toLocaleString('es-ES', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      });
-    }
-  },
+
   methods: {
     async fetchEntrades() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/entradas');
+        const response = await fetch('http://127.0.0.1:8000/api/entrades');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         this.entrades = data;
-        console.log('Entrades:', data )
+        console.log('Entrades:', data)
       } catch (error) {
         console.error("Could not fetch entrades: ", error);
       }
+    },
+    async fetchSesiones() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        this.sesiones = await response.json();
+      } catch (error) {
+        console.error("Could not fetch sessions: ", error);
+      }
+    },
+
+    calculateTotalRecaudado() {
+      let totalRecaudado = 0;
+      for (let i = 0; i < this.sesiones.length; i++) {
+        totalRecaudado += parseFloat(this.sesiones[i].total_recaudado);
+      }
+      return totalRecaudado.toFixed(2); // Limita el resultado a 2 decimales
     }
+
   }
 };
 </script>
@@ -90,5 +104,4 @@ export default {
   font-size: 18px;
   font-weight: bold;
 }
-
 </style>

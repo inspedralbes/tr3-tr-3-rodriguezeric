@@ -32,6 +32,10 @@ class EntradaController extends Controller
     $entrada->email = $request->email;
     $entrada->save();
 
+    $session_id = $request->session_id; 
+    $sessioController = new SessioController();
+    $sessioController->calculateTotalRecaudado($session_id);
+
     // Enviar el correo electrónico de confirmación
     $datosEntrada = [
         'session_id' => $request->session_id,

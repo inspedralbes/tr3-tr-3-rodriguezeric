@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sessio;
+use App\Models\Entrada;
 
 class SessioController extends Controller
 {
@@ -78,5 +79,17 @@ class SessioController extends Controller
         }
     }
     
-
+    // Método para calcular el total recaudado por sesión
+    public function calculateTotalRecaudado($id) {
+        $session = Sessio::find($id);
+        if ($session) {
+            $totalRecaudado = Entrada::where('session_id', $id)->sum('total_amount');
+            $session->total_recaudado = $totalRecaudado;
+            $session->save();
+            
+            return response()->json(['message' => 'Total recaudado calculado y actualizado con éxito para la sesión '.$id]);
+        } else {
+            return response()->json(['message' => 'Sesión no encontrada'], 404);
+        }
+    }
 }

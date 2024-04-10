@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('dia');
             $table->time('hora');
             $table->unsignedBigInteger('pelicula_id'); // Cambiar a unsignedBigInteger para el ID de la película
+            $table->decimal('total_recaudado', 8, 2)->default(0.00);
             $table->foreign('pelicula_id')->references('id')->on('peliculas'); // Agregar clave foránea para referenciar la tabla 'peliculas'
             $table->timestamps();
         });
