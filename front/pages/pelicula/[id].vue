@@ -1,8 +1,9 @@
 <template>
   <Header />
   <div class="cinema-home">
-    <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
+      <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
+
       <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
         <div class="background-overlay" :style="{ backgroundImage: 'url(' + sesion.pelicula.poster + ')' }">
           <div class="gradient-overlay"></div>
@@ -14,17 +15,19 @@
   </div>
   <div v-for="sesion in sesionesFiltradas" :key="sesion.id">
     <div id="info">
-      <p>Día: {{ sesion.dia }}</p>
-      <p>Hora: {{ sesion.hora }}</p>
-      <p>Sinopsis: {{ sesion.pelicula.sinopsis }}</p>
-      <nuxt-link to="/" class="back-button">Volver a la página inicial</nuxt-link>
-      <nuxt-link :to="'/pelicula/compra/' + sesion.id" class="buy-button">Comprar entrada</nuxt-link>
+      <h4>Día: {{ sesion.dia }}</h4>
+      <h5>Hora: {{ sesion.hora }}</h5>
+      <p id="sinopsis">{{ sesion.pelicula.sinopsis }}</p>
+      <a @click="comprarEntrada(sesion.id)" class="buy-button">Comprar entrada</a>
     </div>
   </div>
- 
+  <Footer />
+
 </template>
 
 <script>
+import { userStore, useMovieStore } from '~/store/store.js';
+
 export default {
   data() {
     return {
@@ -33,12 +36,19 @@ export default {
   },
   async mounted() {
     await this.fetchSesiones();
+    this.logged = userStore().logged;
+    this.email = userStore().email;
+    this.name = userStore().name;
+    this.type = userStore().type;
   },
   computed: {
     sesionesFiltradas() {
       const idParam = parseInt(this.$route.params.id);
       return this.sesiones.filter(sesion => sesion.id === idParam);
-    }
+    },
+    userEmail() {
+      return userStore().email;
+    },
   },
   methods: {
     async fetchSesiones() {
@@ -52,6 +62,12 @@ export default {
       } catch (error) {
         console.error("Could not fetch sessions: ", error);
       }
+    },
+    comprarEntrada(peliculaId) {
+      // Guardar el ID de la película en el store de Pinia
+      useMovieStore().setCurrentMovieId(peliculaId);
+      // Redireccionar a la página de compra de entradas
+      this.$router.push(`/pelicula/compra/${peliculaId}`);
     }
   }
 };
@@ -113,16 +129,27 @@ export default {
 
 .back-button {
   display: inline-block;
+  padding: 8px;
+  font-size: .8em;
+  background-color: #eeff00;
+  color: #474747;
+  text-decoration: none;
+  border-radius: 2px;
+  margin-top: 10px;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.buy-button {
+  display: inline-block;
   padding: 10px;
   background-color: #007bff;
   color: #fff;
   text-decoration: none;
   border-radius: 5px;
   margin-top: 10px;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
 }
 
 #poster {
@@ -136,6 +163,12 @@ export default {
   margin: auto;
   padding: 20px;
   width: 80%;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #949494;
+
+}
+
+#sinopsis {
+  font-size: .9em;
+  line-height: 1.5em;
 }
 </style>

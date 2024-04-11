@@ -11,6 +11,7 @@
       Total Recaudado: {{ calculateTotalRecaudado() }}
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>

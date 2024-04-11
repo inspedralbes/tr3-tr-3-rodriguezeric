@@ -4,18 +4,19 @@
     <h2>Lista de Entradas</h2>
     <div class="entrades-table">
       <div class="table-header">
-        <div>Película</div>
-        <div>Asientos</div>
+        <div class="header-item">Película</div>
+        <div class="header-item">Asientos</div>
       </div>
       <div v-if="filteredEntrades.length === 0" class="no-entrades">No hay entradas disponibles.</div>
       <div v-else class="table-body">
         <div v-for="entrada in filteredEntrades" :key="entrada.id" class="table-row">
-          <div>{{ entrada.movie_title }}</div>
-          <div>{{ entrada.selected_seats }}</div>
+          <div class="row-item">{{ entrada.movie_title }}</div>
+          <div class="row-item">{{ formatSeats(entrada.selected_seats) }}</div>
         </div>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
@@ -36,7 +37,6 @@ export default {
     },
     filteredEntrades() {
       return this.entrades.filter(entrada => entrada.email === this.userEmail);
-
     }
   },
   methods: {
@@ -51,6 +51,10 @@ export default {
       } catch (error) {
         console.error("Could not fetch entrades: ", error);
       }
+    },
+    formatSeats(seatsString) {
+      // Formatear la cadena de asientos para que sea más legible
+      return seatsString.split(', ').join(', ');
     }
   }
 };
@@ -66,34 +70,42 @@ export default {
 }
 
 .entrades-table {
-  display: grid;
-  grid-template-columns: auto auto;
-  border: 1px solid #ccc;
+  width: 100%;
   border-collapse: collapse;
-  margin: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .table-header {
-  background-color: #f2f2f2;
+  background-color: #eeff00;
   font-weight: bold;
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+  color: #474747;
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Hacer que la primera columna sea más ancha */
+}
+
+.header-item {
+  padding: 10px;
+  border: 1px solid #007bff;
+}
+
+.table-body {
+  background-color: #003c7c;
 }
 
 .table-row {
-  border-bottom: 1px solid #ccc;
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Hacer que la primera columna sea más ancha */
 }
 
-.table-row:last-child {
-  border-bottom: none;
-}
-
-.table-row div {
-  padding: 8px;
+.row-item {
+  padding: 10px;
+  border: 1px solid #ccc;
 }
 
 .no-entrades {
   margin-top: 20px;
+  color: #777;
 }
-
 </style>

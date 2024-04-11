@@ -1,0 +1,31 @@
+# Utiliza la imagen oficial de PHP
+FROM php:7.4-fpm
+
+# Establece el directorio de trabajo
+WORKDIR /var/www/html
+
+# Instala dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
+
+# Instala Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copia los archivos de la aplicación
+COPY . .
+
+# Instala las dependencias de Composer
+RUN composer install
+
+# Expone el puerto 9000 para PHP-FPM
+EXPOSE 9000

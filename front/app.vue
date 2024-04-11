@@ -12,8 +12,9 @@
 }
 
 body {
+  font-family: 'Arial', sans-serif;
   margin: 0;
-  background-color: var(--fons);
+  background: linear-gradient(to bottom right, #000283, #000);
   color: var(--lletra);
 }
 
