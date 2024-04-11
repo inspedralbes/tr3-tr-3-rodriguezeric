@@ -45,9 +45,11 @@
                 <button type="submit">Register</button>
             </form>
             <p v-if="errorMessage">{{ errorMessage }}</p>
+
         </div>
-    </div>
+    </header>
 </template>
+
 
 <script>
 import { userStore } from '~/store/store.js';
@@ -149,75 +151,5 @@ export default {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropbtn {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
-
-.dropdown-content h2 {
-    margin-top: 0;
-}
-
-.dropdown-content form {
-    margin-bottom: 0;
-}
-
-.dropdown-content p {
-    margin-top: 5px;
-    margin-bottom: 0;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-
-input {
-    margin-bottom: 10px;
-    padding: 8px;
-}
-
-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.benvingut {
-    color: #007bff;
-}
-
-.register-button {
-    color: #007bff;
-    text-decoration: none;
-    margin-left: 10px;
 }
 </style>
