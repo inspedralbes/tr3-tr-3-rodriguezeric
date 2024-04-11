@@ -20,5 +20,6 @@ class Sessio extends Model
     {
         return $this->belongsTo(Pelicula::class, 'pelicula_id'); // Ajusta el nombre de la clase y la columna de la clave foránea si es necesario
     }
+    
 }
 
