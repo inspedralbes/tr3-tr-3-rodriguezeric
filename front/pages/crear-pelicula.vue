@@ -1,4 +1,5 @@
 <template>
+  <Header />
     <div>
       <h1>Crear Pel·lícula</h1>
       <form @submit.prevent="submitForm">
@@ -40,7 +41,7 @@
           sinopsis: this.sinopsis
         };
   
-        fetch('http://127.0.0.1:8000/api/crear-pelicula', {
+        fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/crear-pelicula', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

@@ -1,13 +1,15 @@
+
 <template>
   <nav>
     <header class="header">
       <div class="logo">
-        <h1><nuxt-link to="/">Blockbuster</nuxt-link></h1>
+        
+        <h1><nuxt-link to="/"><span class="circle"></span>Blockbuster</nuxt-link></h1>
       </div>
       <div class="actions" v-if="!logged">
         <div class="dropdown" ref="dropdown">
           <button class="dropbtn" @click="toggleDropdown">Login</button>
-          <div class="dropdown-content" v-show="showLoginForm">
+          <div class="dropdown-content" :class="{ 'show-dropdown': showLoginForm }" @mousedown.stop>
             <h2>Login</h2>
             <form @submit.prevent="login">
               <input type="email" v-model="email" placeholder="Email" required>
@@ -50,10 +52,10 @@ export default {
     this.email = userStore().email;
     this.name = userStore().name;
     this.type = userStore().type;
-    document.addEventListener('click', this.closeDropdown);
+    document.addEventListener('mousedown', this.closeDropdown);
   },
   beforeDestroy() {
-    document.removeEventListener('click', this.closeDropdown);
+    document.removeEventListener('mousedown', this.closeDropdown);
   },
   methods: {
     toggleDropdown() {
@@ -66,7 +68,7 @@ export default {
     },
     async login() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/login', {
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +100,7 @@ export default {
     },
     async logout() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/logout', {
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -118,6 +120,7 @@ export default {
 </script>
 
 <style scoped>
+/* Estilo base del header */
 .header {
   font-family: 'Arial', sans-serif;
   display: flex;
@@ -131,7 +134,14 @@ export default {
   top: 0;
   z-index: 1000;
 }
-
+.circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #ffd700; /* Color amarillo */
+  border-radius: 50%; /* Forma de círculo */
+  margin-right: 10px; /* Espacio entre el círculo y el texto */
+}
 .logo h1 {
   margin: 0;
   font-size: 1.5rem;
@@ -150,24 +160,11 @@ export default {
   cursor: pointer;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropbtn {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+/* Estilo del dropdown */
 .dropdown-content {
   display: none;
   position: absolute;
-  right: 5%;
+  right: 1.5%;
   padding: 15px;
   border-radius: 5px;
   margin-top: 7px;
@@ -176,6 +173,10 @@ export default {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+}
+
+.show-dropdown {
+  display: block;
 }
 
 .dropdown-content h2 {
@@ -227,15 +228,17 @@ button {
 }
 
 .action-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    margin-left: 10px; /* Añadido margen izquierdo */
-  }
+  padding: 8px 16px;
+  background-color: #007bff;
+  color
+
+: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 10px; /* Añadido margen izquierdo */
+}
 
 /* Media queries */
 @media screen and (max-width: 768px) {
@@ -265,7 +268,6 @@ button {
     font-size: .6em;
     text-align: center;
   }
-
-  
 }
 </style>
+

@@ -11,11 +11,14 @@
       <h2 v-if="!showConfirmation" class="infoTotal">Importe total: {{ totalAmount }}€</h2>
 
       <!-- Agregar campo de entrada de correo electrónico antes de confirmar la compra -->
-      <div v-if="!showConfirmation" class="infoCorreo">
+      <div v-if="!showConfirmation && !logged" class="infoCorreo">
         <label for="email" class="infoLabel">Correu electrònic:</label>
         <input type="email" id="email" v-model="email" class="infoInput">
         <button @click="confirmPurchase" class="infoBoton">Confirmar compra</button>
-      </div>
+
+    </div>
+
+      <button v-if="!showConfirmation &&logged" @click="confirmPurchase" class="infoBoton">Confirmar compra</button>
       <button @click="goBack" id="tornar">Tornar</button>
 
     </div>
@@ -53,6 +56,8 @@ export default {
       showConfirmation: false,
       occupiedSeats: [],
       sesion: null, // Agrega una variable para almacenar la sesión actual
+      logged: userStore().logged,
+      
     };
   },
   computed: {
@@ -80,14 +85,15 @@ export default {
     const idParam = parseInt(this.$route.params.id);
     this.idParam = userMovieStore().setCurrentMovieId(idParam);
     this.logged = userStore().logged;
-    this.email = userStore().email;
+    
     this.name = userStore().name;
     this.type = userStore().type;
-  },
+    console.log(this.email, this.name, this.type, this.logged);
+},
   methods: {
     async fetchEntradas() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/entradas');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/entradas');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -114,12 +120,13 @@ export default {
     },
     async fetchSesiones() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/sesiones');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         this.sesiones = data;
+        
       } catch (error) {
         console.error("Could not fetch sessions: ", error);
       }
@@ -167,6 +174,11 @@ export default {
       this.selectedSeats = newSelectedSeats;
     },
     confirmPurchase() {
+
+      if (this.logged) {
+        // Si el usuario ha iniciado sesión, asigna el correo electrónico del usuario
+        this.email = userStore().email;
+    }
       if (!this.sesion) {
         alert('Sesión no definida.');
         return;
@@ -183,7 +195,7 @@ export default {
         total_amount: this.totalAmount,
         email: this.email // Agregar el correo electrónico al objeto entryData
       };
-      fetch('http://127.0.0.1:8000/api/entrada', {
+      fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/entrada', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

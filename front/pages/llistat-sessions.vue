@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div>
     <h1>Sesiones de Cine</h1>
     <div class="sesion-list">
@@ -32,7 +33,7 @@ export default {
   methods: {
     async fetchSesiones() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/sesiones');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -43,7 +44,7 @@ export default {
     },
     async fetchEntradas() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/entradas');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/entradas');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

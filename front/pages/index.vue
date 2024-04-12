@@ -1,7 +1,7 @@
 <template>
   <Header />
   <div class="cinema-home">
-    <h1>Sesiones de Cine</h1>
+    <h1>Sessions de Cine</h1>
     <div class="sesion-list">
       <div v-for="sesion in sesiones" :key="sesion.id" class="movie-card-container">
         <nuxt-link :to="'/pelicula/' + sesion.pelicula.id">
@@ -30,7 +30,7 @@ export default {
   methods: {
     async fetchSesiones() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/sesiones');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

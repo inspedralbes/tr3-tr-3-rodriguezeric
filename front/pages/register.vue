@@ -1,4 +1,5 @@
 <template>
+  <Header />
     <Header />
     <div class="register-container">
       <h2>Register</h2>
@@ -36,7 +37,7 @@
     methods: {
       async register() {
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/register', {
+          const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/register', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

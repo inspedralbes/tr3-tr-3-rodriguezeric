@@ -1,4 +1,5 @@
 <template>
+  <Header />
     <div>
       <h1>Editar Sesión</h1>
       <form @submit.prevent="submitForm">
@@ -44,7 +45,7 @@
     methods: {
       async fetchSesiones() {
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+          const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/sesiones');
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -55,7 +56,7 @@
       },
       async fetchPeliculas() {
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/peliculas');
+          const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/peliculas');
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -82,7 +83,7 @@
           id: this.sesionId
         };
   
-        fetch(`http://127.0.0.1:8000/api/modificar-sessio/${this.sesionId}`, {
+        fetch(`http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/modificar-sessio/${this.sesionId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -105,7 +106,7 @@
         });
       },
       eliminarSesion() {
-  fetch(`http://127.0.0.1:8000/api/eliminar-sessio/${this.sesionId}`, {
+  fetch(`http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/eliminar-sessio/${this.sesionId}`, {
     method: 'DELETE'
   })
   .then(response => {
