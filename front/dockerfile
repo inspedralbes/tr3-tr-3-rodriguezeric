@@ -1,0 +1,17 @@
+# Utiliza la imagen oficial de Node.js
+FROM node:14-alpine
+
+# Establece el directorio de trabajo
+WORKDIR /usr/src/app
+
+# Copia los archivos de la aplicación
+COPY . .
+
+# Instala las dependencias
+RUN npm install
+
+# Compila la aplicación
+RUN npm run build
+
+# Expone el puerto 3000 para el servidor Nuxt
+EXPOSE 3000

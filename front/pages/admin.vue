@@ -11,6 +11,7 @@
       Total Recaudado: {{ calculateTotalRecaudado() }}
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
@@ -36,7 +37,7 @@ export default {
   methods: {
     async fetchEntrades() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/entrades');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/entrades');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -49,7 +50,7 @@ export default {
     },
     async fetchSesiones() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/sesiones');
+        const response = await fetch('http://tr3.a22erirodnos.daw.inspedralbes.cat/laravel/public/api/sesiones');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
