@@ -1,5 +1,4 @@
 <template>
-  <Header />
     <Header />
     <div class="register-container">
       <h2>Register</h2>
