@@ -1,17 +1,11 @@
-# Utiliza la imagen oficial de Node.js
-FROM node:14-alpine
+# Use the official Node.js image as a parent image
+FROM node:20
 
-# Establece el directorio de trabajo
-WORKDIR /usr/src/app
+# Establecer el directorio de trabajo en el contenedor
+WORKDIR /home/node/app
 
-# Copia los archivos de la aplicación
-COPY . .
-
-# Instala las dependencias
-RUN npm install
-
-# Compila la aplicación
-RUN npm run build
-
-# Expone el puerto 3000 para el servidor Nuxt
+# Exponer el puerto en el que se ejecuta la aplicación
 EXPOSE 3000
+
+# Servir la aplicación
+CMD ["npm install" && "npm run dev"]
